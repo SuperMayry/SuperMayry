@@ -2,6 +2,9 @@ module Frontend exposing (..)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
+import Element exposing (..)
+import Element.Background as Background
+import Element.Font as Font
 import Html
 import Html.Attributes as Attr
 import Lamdera
@@ -28,7 +31,6 @@ app =
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
     ( { key = key
-      , message = "Welcome to my new website! I hope to learn to improve this website first 🏀 LETS GOOO 😘"
       }
     , Cmd.none
     )
@@ -67,13 +69,42 @@ view : Model -> Browser.Document FrontendMsg
 view model =
     { title = ""
     , body =
-        [ Html.div [ Attr.style "text-align" "center", Attr.style "padding-top" "40px" ]
-            [ Html.img [ Attr.src "https://lamdera.app/lamdera-logo-black.png", Attr.width 150 ] []
-            , Html.div
-                [ Attr.style "font-family" "sans-serif"
-                , Attr.style "padding-top" "40px"
-                ]
-                [ Html.text model.message ]
-            ]
+        [ layout [ width fill, height fill ] <| displayMyWebsite model
         ]
     }
+
+
+displayMyWebsite : Model -> Element FrontendMsg
+displayMyWebsite model =
+    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white ]
+        [ el
+            [ centerX
+            , Font.size 51
+            ]
+          <|
+            text "SuperMayry 19 🏀"
+        , column
+            [ centerY
+            , centerX
+            , spacing 8
+            ]
+          <|
+            [ el [ centerX ] <| text "Welcome to my new website!"
+            , text "I hope to learn to improve this website first 🏀 LETS GOOO 😘"
+            ]
+        ]
+
+
+smokeColor : Color
+smokeColor =
+    rgb255 60 60 60
+
+
+white : Color
+white =
+    rgb255 255 255 255
+
+
+black : Color
+black =
+    rgb255 0 0 0
