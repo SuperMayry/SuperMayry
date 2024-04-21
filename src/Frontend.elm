@@ -3,11 +3,13 @@ module Frontend exposing (..)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Element exposing (..)
-import Element.Background as Background
+import Element.Background as Background exposing (..)
+import Element.Border as Border
 import Element.Font as Font
 import Html
 import Html.Attributes as Attr
 import Lamdera
+import Palette.Color exposing (smokeColor, white)
 import Types exposing (..)
 import Url
 
@@ -30,8 +32,7 @@ app =
 
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
-    ( { key = key
-      }
+    ( { key = key }
     , Cmd.none
     )
 
@@ -67,7 +68,7 @@ updateFromBackend msg model =
 
 view : Model -> Browser.Document FrontendMsg
 view model =
-    { title = ""
+    { title = "SuperMayry 19 🏀"
     , body =
         [ layout [ width fill, height fill ] <| displayMyWebsite model
         ]
@@ -76,35 +77,24 @@ view model =
 
 displayMyWebsite : Model -> Element FrontendMsg
 displayMyWebsite model =
-    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white ]
+    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64 ]
         [ el
             [ centerX
             , Font.size 51
+            , Font.italic
+            , Font.bold
+            , Font.letterSpacing 13
             ]
-          <|
-            text "SuperMayry 19 🏀"
+            (text "SuperMayry 19 🏀")
         , column
-            [ centerY
-            , centerX
+            [ centerX
             , spacing 8
             ]
-          <|
-            [ el [ centerX ] <| text "Welcome to my new website!"
+            [ el [ centerX ] (text "Welcome to my new website!")
             , text "I hope to learn to improve this website first 🏀 LETS GOOO 😘"
             ]
+        , Element.image [ width (px 400), centerX ]
+            { src = "https://scontent.fvte2-2.fna.fbcdn.net/v/t1.18169-9/46447_10200235267985360_400189615_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeHJZw9IPbK9Brz2SdlTLokD1ykEY9zMxsTXKQRj3MzGxIjUlK5KDJbo23fll31-vjo&_nc_ohc=B6Xhb1fx6zcAb7PnvAp&_nc_ht=scontent.fvte2-2.fna&oh=00_AfCrVAOmGY9hLMTh2p35KBuUlrAl-_8dqXQf_pYZ8eUTPA&oe=664C10A5"
+            , description = "Basketballmayry"
+            }
         ]
-
-
-smokeColor : Color
-smokeColor =
-    rgb255 60 60 60
-
-
-white : Color
-white =
-    rgb255 255 255 255
-
-
-black : Color
-black =
-    rgb255 0 0 0
