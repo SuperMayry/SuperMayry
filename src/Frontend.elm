@@ -6,6 +6,7 @@ import Element exposing (..)
 import Element.Background as Background exposing (..)
 import Element.Border as Border
 import Element.Font as Font
+import Html
 import Lamdera
 import Palette.Color exposing (smokeColor, white)
 import Types exposing (..)
@@ -25,7 +26,7 @@ app =
 
 
 init : Url.Url -> Nav.Key -> ( FrontendModel, Cmd FrontendMsg )
-init url key =
+init _ key =
     ( { key = key }
     , Cmd.none
     )
@@ -46,7 +47,7 @@ update msg model =
                     , Nav.load url
                     )
 
-        UrlChanged url ->
+        UrlChanged _ ->
             ( model, Cmd.none )
 
         NoOpFrontendMsg ->
@@ -61,7 +62,7 @@ updateFromBackend msg model =
 
 
 subscriptions : FrontendModel -> Sub FrontendMsg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -74,10 +75,24 @@ view model =
     }
 
 
+menu : Element msg
+menu =
+    row
+        [ width fill
+        , padding 20
+        , spacing 20
+        ]
+        [ el [ alignRight ] <| text "About Me"
+        , el [ alignRight ] <| text "My Gallery"
+        , el [ alignRight ] <| text "Contect"
+        ]
+
+
 displayMyWebsite : FrontendModel -> Element FrontendMsg
-displayMyWebsite model =
-    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64 ]
-        [ paragraph
+displayMyWebsite _ =
+    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64, scrollbars ]
+        [ menu -- call Fucntion Menu
+        , paragraph
             [ width fill
             , Font.center
             , Font.size 51
