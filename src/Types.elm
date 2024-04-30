@@ -2,11 +2,16 @@ module Types exposing (..)
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
+import Dict exposing (keys)
+import Lamdera exposing (Key)
+import Time
 import Url exposing (Url)
 
 
 type alias FrontendModel =
     { key : Key
+    , zone : Time.Zone -- เก็บข้อมูลเขตเวลาของผู้ใช้
+    , time : Time.Posix -- เก็บเวลาปัจจุบัน
     }
 
 
@@ -19,6 +24,8 @@ type FrontendMsg
     = UrlClicked UrlRequest
     | UrlChanged Url
     | NoOpFrontendMsg
+    | Tick Time.Posix
+    | AdjustTimeZone Time.Zone
 
 
 type ToBackend
