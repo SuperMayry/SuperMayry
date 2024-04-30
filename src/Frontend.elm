@@ -91,25 +91,26 @@ view model =
     }
 
 
-menu : Element msg
-menu =
+menu : FrontendModel -> Element FrontendMsg
+menu model =
     row
         [ width fill
         , padding 20
-        , spacing 20
+        , spacing 64
         ]
-        [ el [ alignRight ] <| text "About Me"
-        , el [ alignRight ] <| text "My Gallery"
-        , el [ alignRight ] <| text "Contect"
+        [ displaySimpleClock model
+        , el [ alignRight, alignTop ] <| text "About Me"
+        , el [ alignRight, alignTop ] <| text "My Gallery"
+        , el [ alignRight, alignTop ] <| text "Contact"
         ]
 
 
 displayMyWebsite : FrontendModel -> Element FrontendMsg
 displayMyWebsite model =
     column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64, scrollbars ]
-        [ menu
-        , displayMyClock model --เพิ่มdisplayclock
-        , el [ width (px 400), height (px 400) ] (displayMyClock model)
+        [ menu model
+
+        -- , el [ width (px 50), height (px 50) ] (displayMyClock model)
         , paragraph
             [ width fill
             , Font.center
@@ -133,6 +134,8 @@ displayMyWebsite model =
             [ centerX
             , spacing 8
             , Font.shadow { offset = ( 2, 4 ), blur = 3, color = rgb255 194 204 255 } -- shadow not Working
+
+            -- , Font.color blue
             ]
             [ el [ centerX ] (text "Welcome to my new website!")
             , text "I hope to learn to improve this website first 🏀 LETS GOOO 😘"
@@ -142,6 +145,21 @@ displayMyWebsite model =
             , description = "Basketballmayry"
             }
         ]
+
+
+displaySimpleClock : FrontendModel -> Element FrontendMsg
+displaySimpleClock model =
+    let
+        hour =
+            String.fromInt (Time.toHour model.zone model.time)
+
+        minute =
+            String.fromInt (Time.toMinute model.zone model.time)
+
+        second =
+            String.fromInt (Time.toSecond model.zone model.time)
+    in
+    el [ Font.size 32 ] (text (hour ++ ":" ++ minute ++ ":" ++ second))
 
 
 displayMyClock : FrontendModel -> Element FrontendMsg
