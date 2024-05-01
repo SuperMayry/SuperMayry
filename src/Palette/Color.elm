@@ -11,3 +11,13 @@ smokeColor =
 white : Color
 white =
     rgb255 255 255 255
+
+
+pink : Color
+pink =
+    rgb255 255 192 203
+
+
+blue : Color
+blue =
+    rgb255 194 204 255
