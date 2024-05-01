@@ -5,10 +5,12 @@ import Browser.Navigation as Nav
 import Element exposing (..)
 import Element.Background as Background exposing (..)
 import Element.Border as Border
+import Element.Events as Events
 import Element.Font as Font
 import Html
 import Lamdera
 import Palette.Color exposing (..)
+import Router exposing (Route(..))
 import Svg exposing (Svg, line)
 import Svg.Attributes as Svg exposing (viewBox)
 import Task
@@ -30,8 +32,8 @@ app =
 
 
 init : Url.Url -> Nav.Key -> ( FrontendModel, Cmd FrontendMsg )
-init _ key =
-    ( { key = key, zone = Time.utc, time = Time.millisToPosix 0 }
+init url key =
+    ( { key = key, zone = Time.utc, time = Time.millisToPosix 0, route = Router.pathToRoute url.path, url = url }
     , Cmd.batch
         [ Task.perform AdjustTimeZone Time.here
         , Task.perform Tick Time.now -- เพิ่มเติมเวลาประเทศไทย
@@ -45,7 +47,7 @@ update msg model =
         UrlClicked urlRequest ->
             case urlRequest of
                 Internal url ->
-                    ( model
+                    ( { model | route = Router.pathToRoute url.path }
                     , Nav.pushUrl model.key (Url.toString url)
                     )
 
@@ -91,32 +93,23 @@ view model =
     }
 
 
-menu : FrontendModel -> Element FrontendMsg
-menu model =
+displayHeader : FrontendModel -> Element FrontendMsg
+displayHeader ({ url } as model) =
     row
         [ width fill
         , padding 20
         , spacing 64
         ]
         [ displaySimpleClock model
-        , el [ alignRight, alignTop, pointer ] <| text "Home"
-        , el [ alignRight, alignTop, pointer ] <| text "About Me"
-        , el [ alignRight, alignTop, pointer ] <| text "My Gallery"
-        , el [ alignRight, alignTop, pointer ] <| text "Contact"
-        ]
-
-
-displayMyWebsite : FrontendModel -> Element FrontendMsg
-displayMyWebsite model =
-    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64, scrollbars ]
-        [ menu model
         , paragraph
             [ width fill
             , Font.center
-            , Font.size 51
+            , Font.size 42
             , Font.italic
             , Font.bold
-            , Font.letterSpacing 13
+            , Font.letterSpacing 4
+            , alignTop
+            , moveUp 9
             ]
             [ el
                 [ centerX
@@ -129,7 +122,41 @@ displayMyWebsite model =
                 ]
                 (text "Mayry 19 🏀")
             ]
-        , column
+        , el [ alignRight, alignTop, pointer, Events.onClick (UrlClicked <| Internal { url | path = Router.routeToPath Home }) ] <| text "Home"
+        , el [ alignRight, alignTop, pointer, Events.onClick (UrlClicked <| Internal { url | path = Router.routeToPath AboutMe }) ] <| text "About Me"
+        , el [ alignRight, alignTop, pointer, Events.onClick (UrlClicked <| Internal { url | path = Router.routeToPath MyGallery }) ] <| text "My Gallery"
+        , el [ alignRight, alignTop, pointer, Events.onClick (UrlClicked <| Internal { url | path = Router.routeToPath Contact }) ] <| text "Contact"
+        ]
+
+
+displayMyWebsite : FrontendModel -> Element FrontendMsg
+displayMyWebsite model =
+    column [ width fill, height fill, paddingXY 48 24, Background.color smokeColor, Font.color white, spacing 64, scrollbars ]
+        [ displayHeader model
+        , displayRoute model
+        ]
+
+
+displayRoute : FrontendModel -> Element FrontendMsg
+displayRoute model =
+    case model.route of
+        Home ->
+            displayHomePage model
+
+        AboutMe ->
+            displayAboutPage model
+
+        MyGallery ->
+            displayMyGalleryPage model
+
+        Contact ->
+            displayContactPage model
+
+
+displayHomePage : FrontendModel -> Element FrontendMsg
+displayHomePage model =
+    column [ width fill, spacing 16 ]
+        [ column
             [ centerX
             , spacing 8
             , Font.shadow { offset = ( 2, 4 ), blur = 3, color = rgb255 194 204 255 }
@@ -144,16 +171,39 @@ displayMyWebsite model =
         ]
 
 
+displayAboutPage : FrontendModel -> Element FrontendMsg
+displayAboutPage model =
+    text "displayAboutPage"
+
+
+displayMyGalleryPage : FrontendModel -> Element FrontendMsg
+displayMyGalleryPage model =
+    text "displayMyGalleryPage"
+
+
+displayContactPage : FrontendModel -> Element FrontendMsg
+displayContactPage model =
+    text "displayContactPage"
+
+
 displaySimpleClock : FrontendModel -> Element FrontendMsg
 displaySimpleClock model =
     let
-        hour =
-            String.fromInt (Time.toHour model.zone model.time)
+        formatTimeValue : Int -> String
+        formatTimeValue value =
+            if value < 10 then
+                "0" ++ String.fromInt value
 
-        minute =
-            String.fromInt (Time.toMinute model.zone model.time)
+            else
+                String.fromInt value
 
-        second =
-            String.fromInt (Time.toSecond model.zone model.time)
+        hours =
+            formatTimeValue (Time.toHour model.zone model.time)
+
+        minutes =
+            formatTimeValue (Time.toMinute model.zone model.time)
+
+        seconds =
+            formatTimeValue (Time.toSecond model.zone model.time)
     in
-    el [ Font.size 32 ] (text (hour ++ ":" ++ minute ++ ":" ++ second))
+    el [ Font.size 32, alignTop ] (text (hours ++ ":" ++ minutes ++ ":" ++ seconds))
