@@ -15,6 +15,9 @@ type alias FrontendModel =
     , time : Time.Posix -- เก็บเวลาปัจจุบัน
     , route : Route
     , url : Url
+    , userName : String
+    , email : String
+    , comment : String
     }
 
 
@@ -24,11 +27,14 @@ type alias BackendModel =
 
 
 type FrontendMsg
-    = UrlClicked UrlRequest
+    = NoOpFrontendMsg
+    | UrlClicked UrlRequest
     | UrlChanged Url
-    | NoOpFrontendMsg
     | Tick Time.Posix
     | AdjustTimeZone Time.Zone
+    | ChangeUsername String
+    | ChangEmail String
+    | Chengcomment String
 
 
 type ToBackend

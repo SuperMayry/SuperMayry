@@ -21,3 +21,8 @@ pink =
 blue : Color
 blue =
     rgb255 194 204 255
+
+
+black : Color
+black =
+    rgb255 0 0 0
